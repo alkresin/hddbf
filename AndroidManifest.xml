@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="su.harbour.hddbf"
+      android:versionCode="1"
+      android:versionName="1.0">
+   <application android:label="hddbf"
+         android:name="su.harbour.hddbf.MainApp">
+      <activity android:name="MainActivity"
+         android:label="hddbf">
+         <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+         </intent-filter>
+      </activity>
+      <activity android:name="su.harbour.hddbf.DopActivity" android:label="2" />
+   </application>
+   <uses-permission android:name="android.permission.INTERNET" />
+</manifest>
