@@ -3,15 +3,15 @@
 
 FUNCTION HDroidMain
 
-   Local oWnd, oLayV, oBrw, cPath
-   Local i, arr := {"Petr","Fedor","Alexander","Viktor","Nikolay","Ivan","Anton", ;
+   LOCAL oWnd, oLayV, oLayH, oBrw, oBtn1, oBtn2, cPath
+   LOCAL i, arr := {"Petr","Fedor","Alexander","Viktor","Nikolay","Ivan","Anton", ;
       "Boris","Alexey","Andrey","Konstantin","Oleg","Igor","Pavel","Sergey","Mikhail","Dmitry", ;
       "Artem","Nikita","Ilya","Vladimir","Vyacheslav","Efim","Lev","Roman","Semen","Miron","Matvey","Leonid"}
 
    INIT WINDOW oWnd TITLE "Browse" ON EXIT {||dbCloseAll()}
 
    MENU
-      MENUITEM "Exit" ACTION hd_calljava_s_v( "exit:")
+      MENUITEM "Exit" ACTION hd_calljava_s_v("exit:")
    ENDMENU
 
    BEGIN LAYOUT oLayV SIZE MATCH_PARENT,MATCH_PARENT
@@ -33,7 +33,8 @@ FUNCTION HDroidMain
 
    IF !Empty( Alias() )
       
-      BROWSE oBrw DBF Alias() HSCROLL ON CLICK {|o,n|hd_toast("Row: "+Ltrim(Str(n))+": "+Trim((o:data)->NAME)+Chr(10)+Dtoc((o:data)->DINFO))}
+      BROWSE oBrw DBF Alias() HSCROLL SIZE MATCH_PARENT, 0 ;
+         ON CLICK {|o,n|hd_toast("Row: "+Ltrim(Str(n))+": "+Trim((o:data)->NAME)+Chr(10)+Dtoc((o:data)->DINFO))}
 
       oBrw:nRowHeight := 40
       oBrw:AddColumn( HDColumn():New( {|o|(o:data)->NAME}, 120 ) )
@@ -42,8 +43,54 @@ FUNCTION HDroidMain
 
    ENDIF
 
+   BEGIN LAYOUT oLayH HORIZONTAL SIZE MATCH_PARENT,WRAP_CONTENT
+
+      BUTTON oBtn1 TEXT "Add record" ;
+            ON CLICK {||EditRec( oBrw,.T. )}
+      BUTTON oBtn2 TEXT "Refresh" ;
+            ON CLICK {||oBrw:Refresh()}
+
+   END LAYOUT oLayH
+
    END LAYOUT oLayV
 
    ACTIVATE WINDOW oWnd
 
    RETURN NIL
+
+STATIC FUNCTION EditRec( oBrw,lNew )
+
+   LOCAL oWnd, oLayV, oBtn1, oBtn2, oEdit1, oEdit2, oEdit3, oEdit4
+
+   INIT WINDOW oWnd TITLE Iif( lNew, "Add record", "Edit record" )
+
+   BEGIN LAYOUT oLayV SIZE MATCH_PARENT,MATCH_PARENT
+
+   EDITBOX oEdit1 HINT "Name"
+   EDITBOX oEdit2 HINT "Number"
+   EDITBOX oEdit3 HINT "Info"
+   EDITBOX oEdit4 HINT "Date"
+
+   BEGIN LAYOUT oLayH HORIZONTAL SIZE MATCH_PARENT,WRAP_CONTENT
+
+      BUTTON oBtn1 TEXT "Ok" ;
+            ON CLICK {||Addrec(oBrw),hd_calljava_s_v("finish:")}
+
+      BUTTON oBtn2 TEXT "Cancel" ;
+            ON CLICK {||hd_calljava_s_v("finish:")}
+
+   END LAYOUT oLayH
+
+   END LAYOUT oLayV
+
+   ACTIVATE WINDOW oWnd
+
+   RETURN NIL
+
+STATIC FUNCTION AddRec( oBrw )
+
+   APPEND BLANK
+   REPLACE NAME WITH "newname", NUM WITH 500
+
+   RETURN NIL
+
