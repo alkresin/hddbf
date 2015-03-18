@@ -34,6 +34,13 @@ public class MainActivity extends Activity {
       MainApp.harb.setContext( this,mainView );
    }
 
+   @Override
+   public void onWindowFocusChanged (boolean hasFocus) {
+      super.onWindowFocusChanged (hasFocus);
+      if( hasFocus )
+         MainApp.harb.doActions();
+   }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
        MainApp.harb.SetMenu( menu );

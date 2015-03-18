@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="su.harbour.hddbf"
       android:versionCode="1"
-      android:versionName="1.0">
+      android:versionName="1.1">
    <application android:label="hddbf"
          android:name="su.harbour.hddbf.MainApp">
       <activity android:name="MainActivity"

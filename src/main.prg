@@ -8,6 +8,8 @@ FUNCTION HDroidMain
       "Boris","Alexey","Andrey","Konstantin","Oleg","Igor","Pavel","Sergey","Mikhail","Dmitry", ;
       "Artem","Nikita","Ilya","Vladimir","Vyacheslav","Efim","Lev","Roman","Semen","Miron","Matvey","Leonid"}
 
+   SET DATE FORMAT "dd/mm/yyyy"
+
    INIT WINDOW oWnd TITLE "Browse" ON EXIT {||dbCloseAll()}
 
    MENU
@@ -34,7 +36,7 @@ FUNCTION HDroidMain
    IF !Empty( Alias() )
       
       BROWSE oBrw DBF Alias() HSCROLL SIZE MATCH_PARENT, 0 ;
-         ON CLICK {|o,n|hd_toast("Row: "+Ltrim(Str(n))+": "+Trim((o:data)->NAME)+Chr(10)+Dtoc((o:data)->DINFO))}
+         ON CLICK {|o,n|EditRec( oBrw,.F. )}
 
       oBrw:nRowHeight := 40
       oBrw:AddColumn( HDColumn():New( {|o|(o:data)->NAME}, 120 ) )
@@ -45,10 +47,8 @@ FUNCTION HDroidMain
 
    BEGIN LAYOUT oLayH HORIZONTAL SIZE MATCH_PARENT,WRAP_CONTENT
 
-      BUTTON oBtn1 TEXT "Add record" ;
+      BUTTON oBtn1 TEXT "Add record" SIZE 0, MATCH_PARENT ;
             ON CLICK {||EditRec( oBrw,.T. )}
-      BUTTON oBtn2 TEXT "Refresh" ;
-            ON CLICK {||oBrw:Refresh()}
 
    END LAYOUT oLayH
 
@@ -60,24 +60,30 @@ FUNCTION HDroidMain
 
 STATIC FUNCTION EditRec( oBrw,lNew )
 
-   LOCAL oWnd, oLayV, oBtn1, oBtn2, oEdit1, oEdit2, oEdit3, oEdit4
+   LOCAL oWnd, oLayV, oBtn1, oBtn2, oBtn3, oEdit1, oEdit2, oEdit3, oEdit4
+   LOCAL nRec := Iif( lNew, 0, (oBrw:data)->( RecNo() ) ), lUpd := .F.
 
    INIT WINDOW oWnd TITLE Iif( lNew, "Add record", "Edit record" )
 
    BEGIN LAYOUT oLayV SIZE MATCH_PARENT,MATCH_PARENT
 
-   EDITBOX oEdit1 HINT "Name"
-   EDITBOX oEdit2 HINT "Number"
-   EDITBOX oEdit3 HINT "Info"
-   EDITBOX oEdit4 HINT "Date"
+   EDITBOX oEdit1 HINT "Name"  TEXT Iif( lNew, "", (oBrw:data)->NAME )
+   EDITBOX oEdit2 HINT "Number" TEXT Iif( lNew, "", Ltrim(Str((oBrw:data)->NUM )))
+   EDITBOX oEdit3 HINT "Info" TEXT Iif( lNew, "", (oBrw:data)->INFO )
+   EDITBOX oEdit4 HINT "dd/mm/yyyy" TEXT Iif( lNew, "", Dtoc((oBrw:data)->DINFO ))
 
    BEGIN LAYOUT oLayH HORIZONTAL SIZE MATCH_PARENT,WRAP_CONTENT
 
-      BUTTON oBtn1 TEXT "Ok" ;
-            ON CLICK {||Addrec(oBrw),hd_calljava_s_v("finish:")}
+      BUTTON oBtn1 TEXT Iif( lNew, "Add&Close", "Update" ) SIZE 0, MATCH_PARENT ;
+            ON CLICK {||Addrec(oBrw,nRec,oEdit1,oEdit2,oEdit3,oEdit4),Iif(lNew,oBrw:Refresh(),oBrw:RefreshRow()),hd_calljava_s_v("finish:")}
 
-      BUTTON oBtn2 TEXT "Cancel" ;
-            ON CLICK {||hd_calljava_s_v("finish:")}
+      IF lNew
+         BUTTON oBtn2 TEXT "Add" SIZE 0, MATCH_PARENT ;
+               ON CLICK {||Addrec(oBrw,0,oEdit1,oEdit2,oEdit3,oEdit4),lUpd := .T.}
+      ENDIF
+
+      BUTTON oBtn3 TEXT "Close" SIZE 0, MATCH_PARENT ;
+            ON CLICK {||Iif(lUpd,oBrw:Refresh(),.F.),hd_calljava_s_v("finish:")}
 
    END LAYOUT oLayH
 
@@ -87,10 +93,15 @@ STATIC FUNCTION EditRec( oBrw,lNew )
 
    RETURN NIL
 
-STATIC FUNCTION AddRec( oBrw )
+STATIC FUNCTION AddRec( oBrw, nRec, oEdit1, oEdit2, oEdit3, oEdit4 )
 
-   APPEND BLANK
-   REPLACE NAME WITH "newname", NUM WITH 500
+   IF nRec == 0
+      APPEND BLANK
+   ELSEIF nRec != (oBrw:data)->( RecNo() )
+      (oBrw:data)->( dbGoTo(nRec) )
+   ENDIF
+   REPLACE NAME WITH oEdit1:GetText(), NUM WITH Val( oEdit2:GetText() ), ;
+      INFO WITH oEdit3:GetText(), DINFO WITH Ctod( oEdit4:GetText() )
 
    RETURN NIL
 
