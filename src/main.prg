@@ -79,7 +79,7 @@ STATIC FUNCTION EditRec( oBrw,lNew )
 
       IF lNew
          BUTTON oBtn2 TEXT "Add" SIZE 0, MATCH_PARENT ;
-               ON CLICK {||Addrec(oBrw,0,oEdit1,oEdit2,oEdit3,oEdit4),lUpd := .T.}
+               ON CLICK {||Addrec(oBrw,0,oEdit1,oEdit2,oEdit3,oEdit4),CleanForm(oEdit1,oEdit2,oEdit3,oEdit4),lUpd := .T.}
       ENDIF
 
       BUTTON oBtn3 TEXT "Close" SIZE 0, MATCH_PARENT ;
@@ -105,3 +105,11 @@ STATIC FUNCTION AddRec( oBrw, nRec, oEdit1, oEdit2, oEdit3, oEdit4 )
 
    RETURN NIL
 
+STATIC FUNCTION CleanForm( oEdit1, oEdit2, oEdit3, oEdit4 )
+
+   oEdit1:SetText( "" )
+   oEdit2:SetText( "" )
+   oEdit3:SetText( "" )
+   oEdit4:SetText( "" )
+
+   RETURN NIL
