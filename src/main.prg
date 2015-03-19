@@ -49,6 +49,7 @@ FUNCTION HDroidMain
 
       BUTTON oBtn1 TEXT "Add record" SIZE 0, MATCH_PARENT ;
             ON CLICK {||EditRec( oBrw,.T. )}
+      oBtn1:nMarginL := oBtn1:nMarginR := 12
 
    END LAYOUT oLayH
 
@@ -74,8 +75,10 @@ STATIC FUNCTION EditRec( oBrw,lNew )
 
    BEGIN LAYOUT oLayH HORIZONTAL SIZE MATCH_PARENT,WRAP_CONTENT
 
+      oLayH:nMarginT := 24
       BUTTON oBtn1 TEXT Iif( lNew, "Add&Close", "Update" ) SIZE 0, MATCH_PARENT ;
             ON CLICK {||Addrec(oBrw,nRec,oEdit1,oEdit2,oEdit3,oEdit4),Iif(lNew,oBrw:Refresh(),oBrw:RefreshRow()),hd_calljava_s_v("finish:")}
+      oBtn1:nMarginL := oBtn1:nMarginR := 8
 
       IF lNew
          BUTTON oBtn2 TEXT "Add" SIZE 0, MATCH_PARENT ;
@@ -84,6 +87,7 @@ STATIC FUNCTION EditRec( oBrw,lNew )
 
       BUTTON oBtn3 TEXT "Close" SIZE 0, MATCH_PARENT ;
             ON CLICK {||Iif(lUpd,oBrw:Refresh(),.F.),hd_calljava_s_v("finish:")}
+      oBtn3:nMarginL := oBtn3:nMarginR := 8
 
    END LAYOUT oLayH
 

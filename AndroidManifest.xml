@@ -4,9 +4,9 @@
       android:versionCode="1"
       android:versionName="1.1">
    <application android:label="hddbf"
-         android:name="su.harbour.hddbf.MainApp">
+         android:name="su.harbour.hddbf.MainApp" android:theme="@style/AppTheme">
       <activity android:name="MainActivity"
-         android:label="hddbf">
+         android:label="hddbf" >
          <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
