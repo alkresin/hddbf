@@ -50,6 +50,8 @@ FUNCTION HDroidMain
       BUTTON oBtn1 TEXT "Add record" SIZE 0, MATCH_PARENT ;
             ON CLICK {||EditRec( oBrw,.T. )}
       oBtn1:nMarginL := oBtn1:nMarginR := 12
+      oBtn1:nMarginT := 4
+      oBtn1:nMarginB := 2
 
    END LAYOUT oLayH
 
