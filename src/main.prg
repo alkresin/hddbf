@@ -39,9 +39,11 @@ FUNCTION HDroidMain
          ON CLICK {|o,n|EditRec( oBrw,.F. )}
 
       oBrw:nRowHeight := 40
-      oBrw:AddColumn( HDColumn():New( {|o|(o:data)->NAME}, 120 ) )
-      oBrw:AddColumn( HDColumn():New( {|o|Str((o:data)->NUM,4)}, 120 ) )
-      oBrw:AddColumn( HDColumn():New( {|o|(o:data)->INFO}, 180 ) )
+      oBrw:nHeadHeight := 24
+      oBrw:HeadBColor := "#0000CD"
+      oBrw:AddColumn( HDColumn():New( {|o|(o:data)->NAME}, 120, "Name" ) )
+      oBrw:AddColumn( HDColumn():New( {|o|Str((o:data)->NUM,4)}, 120, "Num" ) )
+      oBrw:AddColumn( HDColumn():New( {|o|(o:data)->INFO}, 180, "Info" ) )
 
    ENDIF
 
